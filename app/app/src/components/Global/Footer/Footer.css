@@ -1,0 +1,18 @@
+footer {
+  background-color: rgb(233, 249, 233);
+  padding: 2%;
+  margin-top: 5vh;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: rgb(233, 249, 233);
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}

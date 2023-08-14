@@ -1,0 +1,28 @@
+.loginContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.left_side {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.left_side img {
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  border-radius: 0;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 60%;
+  margin: 0 auto;
+}

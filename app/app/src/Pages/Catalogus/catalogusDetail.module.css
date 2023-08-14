@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 95%;
+  margin: 0 auto;
+  text-decoration: none;
+  margin-bottom: 2rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0 5rem;
+  width: 60rem;
+  border-radius: 10px;
+  border: 1px solid #022a98;
+}
+
+.img {
+  width: 30rem;
+  height: 30rem;
+  border-radius: 10px 0 0 10px;
+  object-fit: cover;
+}
+
+.texts {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.card_price {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #022a98;
+  display: flex;
+  flex-direction: column;
+  gap: 0 1rem;
+}
+
+.p {
+  font-size: 2rem;
+  color: #022a98;
+}

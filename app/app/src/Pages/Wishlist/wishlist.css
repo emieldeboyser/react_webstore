@@ -1,0 +1,17 @@
+.allItems {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  align-items: center;
+  margin: 0 auto;
+  flex-wrap: wrap;
+}
+.img img {
+  height: 35vh;
+  width: 25vw;
+  object-fit: contain;
+}
+
+.wishlist {
+  min-height: 36vh;
+}

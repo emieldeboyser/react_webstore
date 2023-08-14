@@ -1,0 +1,26 @@
+/* .productCard {
+  height: 35vh;
+  margin: 0;
+  padding: 0 !important;
+  border: 1px solid rgb(163, 163, 163);
+  border-radius: 5px;
+} */
+
+.productCard img {
+  height: 35vh;
+  width: 25vw;
+  object-fit: cover;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.price {
+  text-align: center;
+}
