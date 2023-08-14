@@ -18,6 +18,7 @@ import EditUser from "./Admin/Edit/editUser";
 import NotFound from "./NotFound/notFound";
 import Cart from "./Cart/cart";
 import Checkout from "./Checkout/checkout";
+import OrderConfirm from "./Checkout/orderConfirm";
 
 const App = () => {
   return (
@@ -31,7 +32,8 @@ const App = () => {
           <Route path="/catalogus" element={<Catalogus />} />
           <Route path="/catalogus/:id" element={<ProductDetail />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />{" "}
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/order-confirmation" element={<OrderConfirm />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/wishlist" element={<WishlistPage />} />
