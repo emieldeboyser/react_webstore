@@ -36,3 +36,16 @@
   object-fit: cover;
   border-radius: 0;
 }
+
+@media only screen and (max-width: 600px) {
+  .left_side {
+    display: none;
+  }
+
+  .loginContainer {
+    display: flex;
+    flex-direction: row;
+    width: 100vw;
+    justify-content: center;
+  }
+}

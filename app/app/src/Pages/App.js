@@ -38,6 +38,7 @@ const App = () => {
           <Route path="/profile/edit" element={<EditProfile />} />
           <Route path="/wishlist" element={<WishlistPage />} />
           {/* admin routs */}
+          {/* only these routes are for the user role administrator */}
           <Route path="/admin" element={<Admin />} />
           <Route path="/admin/addCoupon" element={<AddCouponCode />} />
           <Route path="/admin/editCoupon/:id" element={<EditCoupon />} />
