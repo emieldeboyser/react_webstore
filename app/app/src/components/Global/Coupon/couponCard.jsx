@@ -21,11 +21,11 @@ const CouponCard = ({ coupon }) => {
   return (
     <div className={`card ${style.productCard}`}>
       <div className="card-body d-flex">
-        <div className="col-md-4">
+        <div className="col-md-8">
           <h3>{coupon.coupon_name}</h3>
           <p>{coupon.discount}%</p>
         </div>
-        <div className="col-md-8">
+        <div className="col-md-4">
           <div className="d-flex justify-content-end">
             <Link to={`/admin/editCoupon/${coupon._id}`}>
               <button

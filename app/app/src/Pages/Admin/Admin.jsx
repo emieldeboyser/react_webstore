@@ -6,6 +6,7 @@ import Loading from "../../components/Global/Loading/Loading";
 import useFetch from "../../hooks/useFetch";
 import { Link } from "react-router-dom";
 import Button from "../../components/Global/Button/Button";
+import "./Admin.css";
 
 const Admin = () => {
   const {
@@ -52,7 +53,7 @@ const Admin = () => {
       <div className="products">
         <h2>Producten</h2>
         <Link to={"addProduct"}>
-          <Button> Add product</Button>
+          <Button className="addProductBtn"> Add product</Button>
         </Link>
         <div className="row">
           {products &&

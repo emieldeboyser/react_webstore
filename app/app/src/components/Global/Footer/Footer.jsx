@@ -10,12 +10,12 @@ const Footer = () => {
             <div className="footer__left">
               <h3>Over ons</h3>
               <p>
-                KLJ Keerbergen is een toffe, bruisende, plezante en gezellige
-                jeugdbeweging die al meer dan 90 jaar zorgt voor plezier aan
-                jongeren vanaf 6 jaar. Onze afdeling telt ongeveer 150 leden,
-                die ingedeeld wordt in 4 leeftijdsgroepen: Javotten, Jokers,
-                Lefkes, Kets en Kakkegrieten. Bijna elke zondagnamiddag wordt er
-                een activiteit georganiseerd van 14 uur tot 17 uur.
+                KLJ Keerbergen is a cool, vibrant, pleasant and cozy youth
+                movement that has been providing fun for more than 90 years
+                young people from 6 years old. Our department has about 150
+                members, which is divided into 4 age groups: Javotten, Jokers,
+                Lefkes, Kets and Kakkegrieten. Almost every Sunday afternoon
+                organized an activity from 2 p.m. to 5 p.m.
               </p>
             </div>
           </div>
@@ -56,6 +56,11 @@ const Footer = () => {
                 </li>
               </ul>
             </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <p>2023 &copy; Emiel Deboyser</p>
           </div>
         </div>
       </div>

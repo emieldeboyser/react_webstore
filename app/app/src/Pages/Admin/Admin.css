@@ -1,0 +1,15 @@
+.addProductBtn {
+  background-color: green;
+  color: white;
+  border: none;
+  margin: 2rem 0;
+}
+
+.addProductBtn:hover {
+  background-color: #00b300;
+  color: red;
+}
+
+.products {
+  margin-top: 2rem;
+}

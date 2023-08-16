@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import style from "./productCard.module.css";
+import style from "./productCardAdmin.module.css";
 import { Link } from "react-router-dom";
 import DeleteProductButton from "../../../Pages/Admin/Delete/deleteProduct";
 
@@ -27,10 +27,11 @@ const ProductCardAdmin = ({ product }) => {
             />
           </div>
         </div>
-        <div className="col-md-8">
+        <div className={style.info}>
           <div>
             <h3 className="card-title">{product.name}</h3>
             <p className="card-text">€{product.price}</p>
+            <p className={style.cardDescription}>{product.description}</p>
           </div>
           <div className="d-flex justify-content-end">
             <Link to={`/admin/product/${product._id}`} product={product}>

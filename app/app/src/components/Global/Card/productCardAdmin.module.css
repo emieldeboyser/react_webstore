@@ -1,0 +1,25 @@
+.productCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 15vh;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.productCard img {
+  height: 35vh;
+  width: 25vw;
+  object-fit: cover;
+}
+
+.cardDescription {
+  width: 15vw;
+}
