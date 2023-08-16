@@ -1,0 +1,9 @@
+.productCard {
+  width: 15vw;
+}
+
+.productCard img {
+  height: 30vh;
+  width: 15vw;
+  object-fit: cover;
+}

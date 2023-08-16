@@ -1,8 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
-import Title from "../Title/Title";
-// import style from "./LoginScreen.module.css";
 import useMutation from "../../../hooks/useMutation";
 import { useState } from "react";
 import style from "./Register.module.css";
@@ -50,7 +48,7 @@ const Register = ({ initialError, onLogin }) => {
         <img src="/images/hero.jpeg" alt="log" className={style.loginImg} />
       </div>
       <div className={style.rightSide}>
-        <Title>Make an account</Title>
+        <h1 className={style.title}>Make an account</h1>
 
         <form onSubmit={handleRegister} className={style.registerForm}>
           {error || initialError ? (

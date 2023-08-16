@@ -1,0 +1,11 @@
+.carts {
+  /* min-height: 45vh; */
+  gap: 1rem;
+}
+
+.cart-items {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  flex-wrap: wrap;
+}

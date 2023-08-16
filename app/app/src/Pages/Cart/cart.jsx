@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import useFetch from "../../hooks/useFetch";
 import Loading from "../../components/Global/Loading/Loading";
 import ProductCard from "../../components/Global/Card/productCard";
 import { Link } from "react-router-dom";
+import "./cart.css";
+import CartCard from "../../components/Global/Card/cartCard";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -32,23 +33,24 @@ const Cart = () => {
 
   return (
     <div className="cart-container">
+      <h2>Cart</h2>
+
       <div className="cart-items">
-        <h2>Cart</h2>
         {cartItems.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
           <>
             {cartItems.map((item, index) => (
-              <div key={index} className="row cart-item">
-                <div className="col-1">
+              <div key={index} className="cartItem">
+                <div className="">
                   <button className="btn" onClick={() => removeFromCart(index)}>
                     <span role="img" aria-label="Remove">
                       ❌
                     </span>
                   </button>
                 </div>
-                <div className="col-11">
-                  <ProductCard product={item} />
+                <div className="">
+                  <CartCard product={item} />
                 </div>
               </div>
             ))}
@@ -57,7 +59,9 @@ const Cart = () => {
       </div>
       <div className="total-price">
         <div className="total-price-inner">
-          <p>Total Price: €{calculateTotalPrice()}</p>
+          <p>
+            Total Price: <b>€{calculateTotalPrice()}</b>
+          </p>
           <Link to="/checkout">
             <button>Checkout</button>
           </Link>

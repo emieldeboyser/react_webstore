@@ -274,8 +274,8 @@ const Checkout = () => {
                   type="text"
                   className="form-control"
                   id="email"
-                  placeholder="Email Address"
-                  value={initialEmail}
+                  placeholder={initialEmail}
+                  value={email}
                   onChange={handleCheckoutChange}
                   required
                 />
