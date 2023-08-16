@@ -11,7 +11,7 @@ const EditUser = ({ user, onUpdate }) => {
   const [userCity, setUserCity] = useState("");
   const [userPostalCode, setUserPostalCode] = useState("");
   const [userStreetNumber, setUserStreetNumber] = useState("");
-  const [userRole, setUserRole] = useState("");
+  const [selectedUserRole, setSelectedUserRole] = useState("");
 
   const userFromLocalStorage = JSON.parse(localStorage.getItem("user"));
   const userId = userFromLocalStorage._id;
@@ -38,7 +38,7 @@ const EditUser = ({ user, onUpdate }) => {
     } else if (id === "userStreetNumber") {
       setUserStreetNumber(value);
     } else if (id === "userRole") {
-      setUserRole(value);
+      setSelectedUserRole(value);
     }
   };
 
@@ -52,6 +52,7 @@ const EditUser = ({ user, onUpdate }) => {
         address_city: userCity,
         address_postalcode: userPostalCode,
         address_number: userStreetNumber,
+        role: selectedUserRole,
       };
 
       const response = await mutate(
@@ -78,7 +79,6 @@ const EditUser = ({ user, onUpdate }) => {
       setUserCity("");
       setUserPostalCode("");
       setUserStreetNumber("");
-      setUserRole("");
     } catch (error) {
       console.error("Error editing user:", error);
     }
@@ -170,22 +170,26 @@ const EditUser = ({ user, onUpdate }) => {
             <label>
               <input
                 type="radio"
-                id="userRole"
+                id="adminRole"
+                name="userRole"
                 value="admin"
-                onChange={handleUserChange}
+                checked={selectedUserRole === "admin"}
+                onChange={() => setSelectedUserRole("admin")}
                 required
-              />{" "}
-              Admin
+              />
+              admin
             </label>
             <label>
               <input
                 type="radio"
                 id="userRole"
-                value="gebruiker"
-                onChange={handleUserChange}
+                name="userRole"
+                value="user"
+                checked={selectedUserRole === "user"}
+                onChange={() => setSelectedUserRole("user")}
                 required
-              />{" "}
-              Gebruiker
+              />
+              user
             </label>
           </div>
         </div>
