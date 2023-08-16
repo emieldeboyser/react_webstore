@@ -1,6 +1,5 @@
 import "./Header.css";
 import PropTypes from "prop-types";
-import Container from "../Container/Container";
 import Button from "../Button/Button";
 import { Link } from "react-router-dom";
 import { useAuthContext } from "../../../contexts/AuthContainer";

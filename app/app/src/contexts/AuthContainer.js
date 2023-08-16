@@ -66,5 +66,4 @@ export const useAuthContext = () => {
   return useContext(AuthContext);
 };
 
-// Export AuthContainer component as default
 export default AuthContainer;
