@@ -117,12 +117,13 @@ const registerRegularRoutes = (app) => {
   });
 
   app.get("/profile/orders/:id", async (req, res) => {
-    // not working
-    // const orders = await db
-    //   .collection("orders")
-    //   .find({ user_id: ObjectId(id) })
-    //   .toArray();
-    // res.json(orders);
+    const id = req.params.id; // Extract id from request parameters
+    console.log(id);
+    const orders = await db
+      .collection("orders")
+      .find({ user_id: id })
+      .toArray();
+    res.json(orders);
   });
 };
 

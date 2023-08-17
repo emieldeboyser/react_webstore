@@ -2,3 +2,55 @@ button a {
   text-decoration: none;
   color: white;
 }
+
+.order__item {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.order-items {
+  background-color: transparent !important;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.order-item img {
+  height: 20vh;
+  width: 10vw;
+  object-fit: cover;
+}
+
+.containerOrder {
+  display: flex;
+  flex-direction: column;
+}
+
+.topPart {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  margin: 1rem 0;
+  padding: 1rem 0.5rem;
+}
+
+.products {
+  display: flex;
+  min-height: 25vh;
+}
+
+.product {
+  width: 100%;
+}
+
+.address {
+  border-left: 1px solid #ccc;
+  padding-left: 1rem;
+  width: 25%;
+}
