@@ -18,6 +18,7 @@ const Checkout = () => {
   const [couponValidity, setCouponValidity] = useState(null);
   const [couponDiscount, setCouponDiscount] = useState(null);
   const [validationErrors, setValidationErrors] = useState({});
+  const [discountInfo, setDiscountInfo] = useState(null);
 
   const initialUserName = userInfo.username;
   const initialStreet = userInfo.address_street;
@@ -132,11 +133,19 @@ const Checkout = () => {
         if (responseData.valid) {
           setCouponDiscount(responseData.discount); // Set the coupon discount
           setCouponValidity(true);
+
+          // Set the discount information
+          setDiscountInfo({
+            code: couponCode,
+            amount: responseData.discount,
+          });
         } else {
           setCouponValidity(false);
+          setDiscountInfo(null); // Clear the discount information
         }
       } else {
         setCouponValidity(false);
+        setDiscountInfo(null); // Clear the discount information
       }
     } catch (error) {
       console.error("Failed to check coupon code:", error);
@@ -165,6 +174,10 @@ const Checkout = () => {
           total_price: total,
         };
 
+        if (discountInfo) {
+          data.discount = discountInfo;
+        }
+
         const response = await fetch(
           `${process.env.REACT_APP_API_URL}/checkout`,
           {
@@ -175,14 +188,16 @@ const Checkout = () => {
             body: JSON.stringify(data),
           }
         );
+        let order_id = "";
 
         if (response && response.status === 200) {
           const responseData = await response.json();
-          console.log("Order created successfully:", responseData);
+          console.log("Order created successfully:", responseData._id);
+          order_id = responseData._id;
         } else {
           console.error("Failed to create order. Server response:", response);
         }
-
+        console.log("Order id:", order_id);
         setFirstName("");
         setLastName("");
         setStreet("");
@@ -193,7 +208,7 @@ const Checkout = () => {
         setEmail("");
         setPhone("");
         localStorage.removeItem("cart");
-        window.location.href = "../order-confirmation";
+        window.location.href = `/order-confirmation/${order_id}`;
       } catch (error) {
         console.error("Failed to create order:", error);
       }
@@ -202,11 +217,19 @@ const Checkout = () => {
 
   // Calculate total price
   const totalPrice = cartItems.reduce(
-    (acc, item) => acc + parseInt(item.price),
+    (acc, item) => acc + parseFloat(item.price),
     0
   );
-  const discount = couponDiscount ? (totalPrice * couponDiscount) / 100 : 0;
-  const total = totalPrice - discount;
+
+  const roundedTotalPrice = parseFloat(totalPrice.toFixed(2));
+
+  const discount = couponDiscount
+    ? (roundedTotalPrice * couponDiscount) / 100
+    : 0;
+  const total = (roundedTotalPrice - discount).toFixed(2);
+
+  console.log(total); // This will log the calculated total price after applying the discount
+
   return (
     <div className="checkout-container">
       <h2>Checkout</h2>

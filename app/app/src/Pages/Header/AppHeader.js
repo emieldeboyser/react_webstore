@@ -7,6 +7,7 @@ const AppHeader = () => {
 
   const handleLogout = () => {
     logout();
+    localStorage.clear();
   };
 
   return <Header onLogout={handleLogout} />;

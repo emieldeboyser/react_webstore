@@ -125,6 +125,20 @@ const registerRegularRoutes = (app) => {
       .toArray();
     res.json(orders);
   });
+
+  app.get("/order-confirmation/:id", async (req, res) => {
+    const id = req.params.id;
+    const order = await db.collection("orders").findOne({
+      _id: ObjectId(id),
+    });
+    if (order) {
+      res.json(order);
+      console.log("order found");
+    } else {
+      res.status(404).json({ error: "Not found" });
+      console.log("order not found");
+    }
+  });
 };
 
 const registerAdminRoutes = (app) => {

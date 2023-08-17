@@ -15,7 +15,6 @@ const useFetch = (path) => {
     // Create a variable to keep track of whether the component is still mounted
     let isCurrent = true;
     // Make a fetch request to the API endpoint with the appropriate Authorization header
-    console.log(`${process.env.REACT_APP_API_URL}${path}`);
     fetch(`${process.env.REACT_APP_API_URL}${path}`, {
       headers: {
         Authorization: `Bearer ${user.token}`,

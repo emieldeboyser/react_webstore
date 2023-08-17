@@ -50,7 +50,7 @@ const Admin = () => {
         </div>
       </div>
 
-      <div className="products">
+      <div className="productss">
         <h2>Producten</h2>
         <Link to={"addProduct"}>
           <Button className="addProductBtn"> Add product</Button>

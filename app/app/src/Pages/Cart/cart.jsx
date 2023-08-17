@@ -17,7 +17,7 @@ const Cart = () => {
   }, []);
 
   const calculateTotalPrice = () => {
-    return cartItems.reduce((total, item) => total + parseInt(item.price), 0);
+    return cartItems.reduce((total, item) => total + parseFloat(item.price), 0);
   };
 
   const removeFromCart = (itemIndex) => {
