@@ -10,7 +10,6 @@ const EditProduct = ({ product, onUpdate }) => {
   const [productDescription, setProductDescription] = useState("");
   const [productPhoto, setProductPhoto] = useState(null);
 
-  console.log(product);
   const productFromLocalStorage = JSON.parse(localStorage.getItem("product"));
 
   const productId = productFromLocalStorage._id;
@@ -19,8 +18,16 @@ const EditProduct = ({ product, onUpdate }) => {
   const initialProductDescription = productFromLocalStorage.description;
   const initialProductPhoto = productFromLocalStorage.photo;
 
+  // Validation state for input fields
+  const [validationErrors, setValidationErrors] = useState({
+    productName: "",
+    productPrice: "",
+    productDescription: "",
+    productPhoto: "",
+  });
+
   const handleProductChange = (event) => {
-    const { id, value } = event.target;
+    const { id, value, files } = event.target;
     if (id === "productName") {
       setProductName(value);
     } else if (id === "productPrice") {
@@ -28,47 +35,94 @@ const EditProduct = ({ product, onUpdate }) => {
     } else if (id === "productDescription") {
       setProductDescription(value);
     } else if (id === "productPhoto") {
-      setProductPhoto(event.target.files[0]);
+      setProductPhoto(files[0]);
     }
+
+    // Clear validation error when user starts typing or selects a file
+    setValidationErrors({
+      ...validationErrors,
+      [id]: "",
+    });
+  };
+
+  // Validation functions
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!productName) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        productName: "Product name is required",
+      }));
+      isValid = false;
+    }
+
+    if (!productPrice) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        productPrice: "Product price is required",
+      }));
+      isValid = false;
+    }
+
+    if (!productDescription) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        productDescription: "Product description is required",
+      }));
+      isValid = false;
+    }
+
+    if (!productPhoto) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        productPhoto: "Product photo is required",
+      }));
+      isValid = false;
+    }
+
+    return isValid;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const data = {
-        name: productName,
-        price: productPrice,
-        description: productDescription,
-        photo: productPhoto,
-      };
 
-      const response = await mutate(
-        `${process.env.REACT_APP_API_URL}/product/${productId}`,
-        {
-          method: "PATCH",
-          data: data,
-          onSuccess: () => {
-            onUpdate();
-            navigate(`/admin`);
-          },
+    if (validateForm()) {
+      try {
+        const formData = new FormData();
+        formData.append("name", productName);
+        formData.append("price", productPrice);
+        formData.append("description", productDescription);
+        formData.append("photo", productPhoto);
+
+        const response = await mutate(
+          `${process.env.REACT_APP_API_URL}/product/${productId}`,
+          {
+            method: "PATCH",
+            data: formData,
+            onSuccess: () => {
+              onUpdate();
+              navigate(`/admin`);
+            },
+          }
+        );
+
+        if (response && response.status === 200) {
+          const responseData = response.data;
+          console.log("Product edited successfully:", responseData);
+        } else {
+          console.error("Failed to edit product. Server response:", response);
         }
-      );
 
-      if (response && response.status === 200) {
-        const responseData = response.data;
-        console.log("Product edited successfully:", responseData);
-      } else {
-        console.error("Failed to edit product. Server response:", response);
+        setProductName("");
+        setProductPrice("");
+        setProductDescription("");
+        setProductPhoto(null);
+
+        window.location.href = "../";
+      } catch (error) {
+        console.error("Error editing product:", error);
       }
-
-      setProductName("");
-      setProductPrice("");
-      setProductDescription("");
-      setProductPhoto(null);
-
-      window.location.href = "../";
-    } catch (error) {
-      console.error("Error editing product:", error);
     }
   };
 
@@ -88,8 +142,10 @@ const EditProduct = ({ product, onUpdate }) => {
             value={productName}
             onChange={handleProductChange}
             placeholder={initialProductName}
-            required
           />
+          {validationErrors.productName && (
+            <p className="error">{validationErrors.productName}</p>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="productPrice">Product Price:</label>
@@ -100,8 +156,10 @@ const EditProduct = ({ product, onUpdate }) => {
             value={productPrice}
             onChange={handleProductChange}
             placeholder={initialProductPrice}
-            required
           />
+          {validationErrors.productPrice && (
+            <p className="error">{validationErrors.productPrice}</p>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="productDescription">Product Description:</label>
@@ -111,8 +169,10 @@ const EditProduct = ({ product, onUpdate }) => {
             value={productDescription}
             onChange={handleProductChange}
             placeholder={initialProductDescription}
-            required
           />
+          {validationErrors.productDescription && (
+            <p className="error">{validationErrors.productDescription}</p>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="productPhoto">Product Photo:</label>
@@ -123,17 +183,14 @@ const EditProduct = ({ product, onUpdate }) => {
             onChange={handleProductChange}
             accept="image/*"
           />
+          {validationErrors.productPhoto && (
+            <p className="error">{validationErrors.productPhoto}</p>
+          )}
         </div>
         <button type="submit" className="btn btn-primary">
           Edit Product
         </button>
       </form>
-      <div>
-        <img
-          src={`../images/${initialProductPhoto}`}
-          alt={initialProductPhoto}
-        />
-      </div>
     </div>
   );
 };

@@ -8,11 +8,16 @@ const EditCoupon = ({ coupon, onUpdate }) => {
   const [couponCode, setCouponCode] = useState("");
   const [couponAmount, setCouponAmount] = useState("");
 
-  // get coupon from local storage
   const couponFromLocalStorage = JSON.parse(localStorage.getItem("coupon"));
   const couponName = couponFromLocalStorage.coupon_name;
   const couponDiscount = couponFromLocalStorage.discount;
   const couponId = couponFromLocalStorage._id;
+
+  // Validation state for input fields
+  const [validationErrors, setValidationErrors] = useState({
+    couponCode: "",
+    couponAmount: "",
+  });
 
   const handleCouponChange = (event) => {
     const { id, value } = event.target;
@@ -21,48 +26,68 @@ const EditCoupon = ({ coupon, onUpdate }) => {
     } else if (id === "couponAmount") {
       setCouponAmount(value);
     }
+
+    // Clear validation error when user starts typing
+    setValidationErrors({
+      ...validationErrors,
+      [id]: "",
+    });
+  };
+
+  const validateForm = () => {
+    let isValid = true;
+    const errors = {};
+
+    if (!couponCode) {
+      errors.couponCode = "Coupon code is required";
+      isValid = false;
+    }
+
+    if (!couponAmount) {
+      errors.couponAmount = "Coupon amount is required";
+      isValid = false;
+    }
+
+    setValidationErrors(errors);
+    return isValid;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const data = {
-        coupon_name: couponCode,
-        discount: couponAmount,
-      };
+    if (validateForm()) {
+      try {
+        const data = {
+          coupon_name: couponCode,
+          discount: couponAmount,
+        };
 
-      const response = await mutate(
-        `${process.env.REACT_APP_API_URL}/coupons/${couponId}`,
-        {
-          method: "PATCH",
-          data: data,
-          onSuccess: () => {
-            onUpdate();
-            navigate(`/coupons`);
-          },
+        const response = await mutate(
+          `${process.env.REACT_APP_API_URL}/coupons/${couponId}`,
+          {
+            method: "PATCH",
+            data: data,
+            onSuccess: () => {
+              onUpdate();
+              navigate(`/coupons`);
+            },
+          }
+        );
+        console.log(response);
+
+        if (response && response.status === 200) {
+          const responseData = response.data;
+          console.log("Coupon edited successfully:", responseData);
+        } else {
+          console.error("Failed to edit coupon. Server response:", response);
         }
-      );
 
-      if (response && response.status === 200) {
-        // The request was successful
-        // You can access the response data if needed
-        const responseData = response.data;
-        console.log("Coupon edited successfully:", responseData);
-
-        // Perform any additional actions based on the response
-        // For example, show a success message or update the state with the response data.
-      } else {
-        // The server returned an error status
-        console.error("Failed to edit coupon. Server response:", response);
-        // Handle the error appropriately, such as displaying an error message.
+        setCouponCode("");
+        setCouponAmount("");
+        localStorage.removeItem("coupon");
+        window.location.href = "/admin";
+      } catch (error) {
+        console.error("Error editing coupon:", error);
       }
-      setCouponCode("");
-      setCouponAmount("");
-      // clear local storage
-      localStorage.removeItem("coupon");
-      window.location.href = "../";
-    } catch (error) {
-      console.error("Error editing coupon:", error);
     }
   };
 
@@ -70,7 +95,6 @@ const EditCoupon = ({ coupon, onUpdate }) => {
     <>
       <Link to="/admin">&lt; Back</Link>
       <h3>Edit Coupon</h3>
-      {error && <p>{error}</p>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="couponCode">Coupon Code:</label>
@@ -81,8 +105,10 @@ const EditCoupon = ({ coupon, onUpdate }) => {
             value={couponCode}
             onChange={handleCouponChange}
             placeholder={couponName}
-            required
           />
+          {validationErrors.couponCode && (
+            <p className="error">{validationErrors.couponCode}</p>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="couponAmount">Coupon Amount:</label>
@@ -93,8 +119,10 @@ const EditCoupon = ({ coupon, onUpdate }) => {
             value={couponAmount}
             onChange={handleCouponChange}
             placeholder={couponDiscount}
-            required
           />
+          {validationErrors.couponAmount && (
+            <p className="error">{validationErrors.couponAmount}</p>
+          )}
         </div>
         <button type="submit" className="btn btn-primary">
           Edit Coupon

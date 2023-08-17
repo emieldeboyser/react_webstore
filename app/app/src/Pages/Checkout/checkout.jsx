@@ -3,21 +3,21 @@ import style from "./checkout.module.css";
 import useFetch from "../../hooks/useFetch";
 
 const Checkout = () => {
-  // get user info from local storage
   const userInfo = JSON.parse(localStorage.getItem("SVS_USER")) || {};
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
-  const [street, setStreet] = useState();
-  const [houseNumber, setHouseNumber] = useState();
-  const [postalCode, setPostalCode] = useState();
-  const [city, setCity] = useState();
-  const [country, setCountry] = useState();
-  const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [street, setStreet] = useState("");
+  const [houseNumber, setHouseNumber] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [city, setCity] = useState("");
+  const [country, setCountry] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [couponCode, setCouponCode] = useState("");
   const [couponValidity, setCouponValidity] = useState(null);
   const [couponDiscount, setCouponDiscount] = useState(null);
+  const [validationErrors, setValidationErrors] = useState({});
 
   const initialUserName = userInfo.username;
   const initialStreet = userInfo.address_street;
@@ -60,6 +60,59 @@ const Checkout = () => {
     }
   };
 
+  const validateForm = () => {
+    let isValid = true;
+    const errors = {};
+
+    if (!firstName) {
+      errors.firstName = "First Name is required";
+      isValid = false;
+    }
+
+    if (!lastName) {
+      errors.lastName = "Last Name is required";
+      isValid = false;
+    }
+
+    if (!street) {
+      errors.street = "Street is required";
+      isValid = false;
+    }
+
+    if (!houseNumber) {
+      errors.houseNumber = "House Number is required";
+      isValid = false;
+    }
+
+    if (!postalCode) {
+      errors.postalCode = "Postal Code is required";
+      isValid = false;
+    }
+
+    if (!city) {
+      errors.city = "City is required";
+      isValid = false;
+    }
+
+    if (!country) {
+      errors.country = "Country is required";
+      isValid = false;
+    }
+
+    if (!email) {
+      errors.email = "Email is required";
+      isValid = false;
+    }
+
+    if (!phone) {
+      errors.phone = "Phone Number is required";
+      isValid = false;
+    }
+
+    setValidationErrors(errors);
+    return isValid;
+  };
+
   const handleCouponCheck = async () => {
     try {
       const response = await fetch(
@@ -92,52 +145,58 @@ const Checkout = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const data = {
-        user_id: userInfo._id,
-        username: initialUserName,
-        firstName: firstName,
-        lastName: lastName,
-        street: street,
-        houseNumber: houseNumber,
-        postalCode: postalCode,
-        city: city,
-        country: country,
-        email: email,
-        phone: phone,
-        order: JSON.parse(localStorage.getItem("cart")),
-      };
+    const isValid = validateForm();
+    if (isValid) {
+      try {
+        const data = {
+          user_id: userInfo._id,
+          username: initialUserName,
+          firstName: firstName,
+          lastName: lastName,
+          street: street,
+          houseNumber: houseNumber,
+          postalCode: postalCode,
+          city: city,
+          country: country,
+          email: email,
+          phone: phone,
+          order: JSON.parse(localStorage.getItem("cart")),
+          order_created: new Date(),
+          total_price: total,
+        };
 
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/checkout`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
+        const response = await fetch(
+          `${process.env.REACT_APP_API_URL}/checkout`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+
+        if (response && response.status === 200) {
+          const responseData = await response.json();
+          console.log("Order created successfully:", responseData);
+        } else {
+          console.error("Failed to create order. Server response:", response);
         }
-      );
 
-      if (response && response.status === 200) {
-        const responseData = await response.json();
-        console.log("Order created successfully:", responseData);
+        setFirstName("");
+        setLastName("");
+        setStreet("");
+        setHouseNumber("");
+        setPostalCode("");
+        setCity("");
+        setCountry("");
+        setEmail("");
+        setPhone("");
+        localStorage.removeItem("cart");
         window.location.href = "../order-confirmation";
-      } else {
-        console.error("Failed to create order. Server response:", response);
+      } catch (error) {
+        console.error("Failed to create order:", error);
       }
-      setFirstName("");
-      setLastName("");
-      setStreet("");
-      setHouseNumber("");
-      setPostalCode("");
-      setCity("");
-      setCountry("");
-      setEmail("");
-      setPhone("");
-      localStorage.removeItem("cart");
-    } catch (error) {
-      console.error("Failed to create order:", error);
     }
   };
 
@@ -148,7 +207,6 @@ const Checkout = () => {
   );
   const discount = couponDiscount ? (totalPrice * couponDiscount) / 100 : 0;
   const total = totalPrice - discount;
-
   return (
     <div className="checkout-container">
       <h2>Checkout</h2>
@@ -182,8 +240,10 @@ const Checkout = () => {
                   placeholder="First Name"
                   onChange={handleCheckoutChange}
                   value={firstName}
-                  required
                 />
+                {validationErrors.firstName && (
+                  <p className="error">{validationErrors.firstName}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="lastName">Last Name</label>
@@ -195,6 +255,9 @@ const Checkout = () => {
                   onChange={handleCheckoutChange}
                   value={lastName}
                 />
+                {validationErrors.lastName && (
+                  <p className="error">{validationErrors.lastName}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="street">Street</label>
@@ -205,8 +268,10 @@ const Checkout = () => {
                   value={street}
                   placeholder={initialStreet}
                   onChange={handleCheckoutChange}
-                  required
                 />
+                {validationErrors.street && (
+                  <p className="error">{validationErrors.street}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="houseNumber">House Number</label>
@@ -217,8 +282,10 @@ const Checkout = () => {
                   value={houseNumber}
                   placeholder={initialHouseNumber}
                   onChange={handleCheckoutChange}
-                  required
                 />
+                {validationErrors.houseNumber && (
+                  <p className="error">{validationErrors.houseNumber}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="postalCode">Postal Code</label>
@@ -229,8 +296,10 @@ const Checkout = () => {
                   placeholder={initialPostalCode}
                   value={postalCode}
                   onChange={handleCheckoutChange}
-                  required
                 />
+                {validationErrors.postalCode && (
+                  <p className="error">{validationErrors.postalCode}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="city">City</label>
@@ -241,8 +310,10 @@ const Checkout = () => {
                   placeholder={initialCity}
                   value={city}
                   onChange={handleCheckoutChange}
-                  required
                 />
+                {validationErrors.city && (
+                  <p className="error">{validationErrors.city}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="country">Country</label>
@@ -253,8 +324,10 @@ const Checkout = () => {
                   placeholder="Country"
                   onChange={handleCheckoutChange}
                   value={country}
-                  required
                 />
+                {validationErrors.country && (
+                  <p className="error">{validationErrors.country}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="phoneNumber">Phone Number</label>
@@ -265,8 +338,10 @@ const Checkout = () => {
                   value={phone}
                   placeholder={initialPhone}
                   onChange={handleCheckoutChange}
-                  required
                 />
+                {validationErrors.phone && (
+                  <p className="error">{validationErrors.phone}</p>
+                )}
               </div>
               <div className="form-group">
                 <label htmlFor="email">Email Address</label>
@@ -277,8 +352,10 @@ const Checkout = () => {
                   placeholder={initialEmail}
                   value={email}
                   onChange={handleCheckoutChange}
-                  required
                 />
+                {validationErrors.email && (
+                  <p className="error">{validationErrors.email}</p>
+                )}
               </div>
               {/* Coupon code */}
               <div className="form-group">

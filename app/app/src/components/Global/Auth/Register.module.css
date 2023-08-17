@@ -44,6 +44,13 @@
   border-radius: 0;
 }
 
+.errorMessage {
+  background-color: red;
+  color: white;
+  padding: 5px;
+  border-radius: 5px;
+}
+
 @media only screen and (max-width: 600px) {
   .left_side {
     display: none;

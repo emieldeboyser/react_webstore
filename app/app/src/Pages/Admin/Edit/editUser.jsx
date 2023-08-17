@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import useMutation from "../../../hooks/useMutation";
 import { useState } from "react";
+import "./editUser.css";
 
 const EditUser = ({ user, onUpdate }) => {
   const navigate = useNavigate();
@@ -23,6 +24,17 @@ const EditUser = ({ user, onUpdate }) => {
   const initialUserStreetNumber = userFromLocalStorage.address_number;
   const initialUserRole = userFromLocalStorage.role;
 
+  // Validation state for input fields
+  const [validationErrors, setValidationErrors] = useState({
+    userName: "",
+    userEmail: "",
+    userStreet: "",
+    userCity: "",
+    userPostalCode: "",
+    userStreetNumber: "",
+    userRole: "",
+  });
+
   const handleUserChange = (event) => {
     const { id, value } = event.target;
     if (id === "userName") {
@@ -40,47 +52,120 @@ const EditUser = ({ user, onUpdate }) => {
     } else if (id === "userRole") {
       setSelectedUserRole(value);
     }
+
+    // Clear validation error when user starts typing
+    setValidationErrors({
+      ...validationErrors,
+      [id]: "",
+    });
+  };
+
+  // Validation functions
+  const validateForm = () => {
+    let isValid = true;
+
+    if (!userName) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        userName: "Username is required",
+      }));
+      isValid = false;
+    }
+
+    if (!userEmail) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        userEmail: "Email is required",
+      }));
+      isValid = false;
+    }
+
+    if (!userStreet) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        userStreet: "Street is required",
+      }));
+      isValid = false;
+    }
+
+    if (!userCity) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        userCity: "City is required",
+      }));
+      isValid = false;
+    }
+
+    if (!userPostalCode) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        userPostalCode: "Postal code is required",
+      }));
+      isValid = false;
+    }
+
+    if (!userStreetNumber) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        userStreetNumber: "Street number is required",
+      }));
+      isValid = false;
+    }
+
+    if (!selectedUserRole) {
+      setValidationErrors((prevErrors) => ({
+        ...prevErrors,
+        userRole: "Role is required",
+      }));
+      isValid = false;
+    }
+
+    return isValid;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    try {
-      const data = {
-        username: userName,
-        email: userEmail,
-        address_street: userStreet,
-        address_city: userCity,
-        address_postalcode: userPostalCode,
-        address_number: userStreetNumber,
-        role: selectedUserRole,
-      };
 
-      const response = await mutate(
-        `${process.env.REACT_APP_API_URL}/users/${userId}`,
-        {
-          method: "PATCH",
-          data: data,
-          onSuccess: () => {
-            onUpdate();
-            navigate(`/admin`);
-          },
+    if (validateForm()) {
+      try {
+        const data = {
+          username: userName,
+          email: userEmail,
+          address_street: userStreet,
+          address_city: userCity,
+          address_postalcode: userPostalCode,
+          address_number: userStreetNumber,
+          role: selectedUserRole,
+        };
+
+        const response = await mutate(
+          `${process.env.REACT_APP_API_URL}/users/${userId}`,
+          {
+            method: "PATCH",
+            data: data,
+            onSuccess: () => {
+              onUpdate();
+              navigate(`/admin`);
+            },
+          }
+        );
+
+        if (response && response.status === 200) {
+          const responseData = response.data;
+          console.log("User edited successfully:", responseData);
+        } else {
+          console.error("Failed to edit user. Server response:", response);
         }
-      );
-
-      if (response && response.status === 200) {
-        const responseData = response.data;
-        console.log("User edited successfully:", responseData);
-      } else {
-        console.error("Failed to edit user. Server response:", response);
+        setUserName("");
+        setUserEmail("");
+        setUserStreet("");
+        setUserCity("");
+        setUserPostalCode("");
+        setUserStreetNumber("");
+        setSelectedUserRole("");
+      } catch (error) {
+        console.error("Error editing user:", error);
       }
-      setUserName("");
-      setUserEmail("");
-      setUserStreet("");
-      setUserCity("");
-      setUserPostalCode("");
-      setUserStreetNumber("");
-    } catch (error) {
-      console.error("Error editing user:", error);
     }
   };
 
@@ -100,9 +185,12 @@ const EditUser = ({ user, onUpdate }) => {
             value={userName}
             onChange={handleUserChange}
             placeholder={initialUserName}
-            required
           />
+          {validationErrors.userName && (
+            <p className="error">{validationErrors.userName}</p>
+          )}
         </div>
+
         <div className="form-group">
           <label htmlFor="userEmail">User Email:</label>
           <input
@@ -112,8 +200,10 @@ const EditUser = ({ user, onUpdate }) => {
             value={userEmail}
             onChange={handleUserChange}
             placeholder={initialUserEmail}
-            required
           />
+          {validationErrors.userEmail && (
+            <p className="error">{validationErrors.userEmail}</p>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="userStreet">Street:</label>
@@ -124,32 +214,10 @@ const EditUser = ({ user, onUpdate }) => {
             value={userStreet}
             onChange={handleUserChange}
             placeholder={initialUserStreet}
-            required
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="userCity">City:</label>
-          <input
-            type="text"
-            className="form-control"
-            id="userCity"
-            value={userCity}
-            onChange={handleUserChange}
-            placeholder={initialUserCity}
-            required
-          />
-        </div>
-        <div className="form-group">
-          <label htmlFor="userPostalCode">Postal Code:</label>
-          <input
-            type="text"
-            className="form-control"
-            id="userPostalCode"
-            value={userPostalCode}
-            onChange={handleUserChange}
-            placeholder={initialUserPostalCode}
-            required
-          />
+          {validationErrors.userStreet && (
+            <p className="error">{validationErrors.userStreet}</p>
+          )}
         </div>
         <div className="form-group">
           <label htmlFor="userStreetNumber">Street Number:</label>
@@ -160,9 +228,40 @@ const EditUser = ({ user, onUpdate }) => {
             value={userStreetNumber}
             onChange={handleUserChange}
             placeholder={initialUserStreetNumber}
-            required
           />
+          {validationErrors.userStreetNumber && (
+            <p className="error">{validationErrors.userStreetNumber}</p>
+          )}
         </div>
+        <div className="form-group">
+          <label htmlFor="userCity">City:</label>
+          <input
+            type="text"
+            className="form-control"
+            id="userCity"
+            value={userCity}
+            onChange={handleUserChange}
+            placeholder={initialUserCity}
+          />
+          {validationErrors.userCity && (
+            <p className="error">{validationErrors.userCity}</p>
+          )}
+        </div>
+        <div className="form-group">
+          <label htmlFor="userPostalCode">Postal Code:</label>
+          <input
+            type="text"
+            className="form-control"
+            id="userPostalCode"
+            value={userPostalCode}
+            onChange={handleUserChange}
+            placeholder={initialUserPostalCode}
+          />
+          {validationErrors.userPostalCode && (
+            <p className="error">{validationErrors.userPostalCode}</p>
+          )}
+        </div>
+
         <div className="form-group">
           <label htmlFor="userRole">Role:</label>
           <p>Your current role is: {initialUserRole}</p>
@@ -175,7 +274,6 @@ const EditUser = ({ user, onUpdate }) => {
                 value="admin"
                 checked={selectedUserRole === "admin"}
                 onChange={() => setSelectedUserRole("admin")}
-                required
               />
               admin
             </label>
@@ -187,11 +285,13 @@ const EditUser = ({ user, onUpdate }) => {
                 value="user"
                 checked={selectedUserRole === "user"}
                 onChange={() => setSelectedUserRole("user")}
-                required
               />
               user
             </label>
           </div>
+          {validationErrors.userRole && (
+            <p className="error">{validationErrors.userRole}</p>
+          )}
         </div>
         <button type="submit" className="btn btn-primary">
           Edit User
